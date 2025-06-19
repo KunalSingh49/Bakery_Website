@@ -94,7 +94,7 @@ export default function ContactSection() {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <Email sx={{ color: "#db2777" }} />
                 <Typography sx={{ color: "black", fontSize: 14 }}>
-                  info@sweetdelights.com
+                  info@shruti's Bakery.com
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
