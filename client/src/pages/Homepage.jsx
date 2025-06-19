@@ -1,9 +1,9 @@
 import { Box } from "@mui/material"
 import Header from "../components/Header"
-import HeroSection from "../components/HeroSection"
-import FeaturedCakes from "../components/FeaturedCakes"
-import AboutSection from "../components/AboutSection"
-import ContactSection from "../components/ContactSection"
+import HeroSection from "../components/HomePage/HeroSection"
+import FeaturedCakes from "../components/HomePage/FeaturedCakes"
+import AboutSection from "../components/HomePage/AboutSection"
+import ContactSection from "../components/HomePage/ContactSection"
 import Footer from "../components/Footer"
 
 export default function Home() {

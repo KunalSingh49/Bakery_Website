@@ -9,7 +9,7 @@ import {
   styled,
 } from "@mui/material";
 import { ChevronRight } from "@mui/icons-material";
-import Featured from "../assets/Featured.png";
+import Featured from "../../assets/Featured.png";
 
 const HeroWrapper = styled(Box)(({ theme }) => ({
   position: "relative",

@@ -13,9 +13,9 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import cake1 from "../assets/cake1.png";
-import cake2 from "../assets/cake2.png";
-import cake3 from "../assets/cake3.png";
+import cake1 from "../../assets/cake1.png";
+import cake2 from "../../assets/cake2.png";
+import cake3 from "../../assets/cake3.png";
 
 const PinkSection = styled(Box)(({ theme }) => ({
   background: "linear-gradient(to right, #fff1f2, #fbcfe8)",
