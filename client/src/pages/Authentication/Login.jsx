@@ -9,61 +9,78 @@ import {
   MenuItem,
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useState } from "react";
 
 export default function Login() {
   const [role, setRole] = useState("user");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
 
-    // 🔐 Sample role-based validation logic (replace with backend request)
-    if (role === "admin") {
-      // Validate admin credentials
-      console.log("Logging in as Admin", { email, password });
-    } else {
-      // Validate user credentials
-      console.log("Logging in as User", { email, password });
-    }
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    alert(`Logged in as ${role}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
+
+      // ✅ Store token (optional)
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+
+      // ✅ Navigate to respective dashboard
+      if (data.role === "admin") {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/user-dashboard");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Something went wrong. Please try again.");
+    }
   };
 
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(to bottom right, #f8fafc, #f1f5f9)",
+        background: "linear-gradient(135deg, #fff0f6 0%, #fce7f3 50%, #f8fafc 100%)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         py: 8,
+        px: 2,
       }}
     >
-      <Container maxWidth="xs" sx={{ position: "relative" }}>
+      <Container maxWidth="sm" sx={{ position: "relative" }}>
         {/* Back to Home */}
-        <Link
-          to="/"
-          style={{
-            position: "absolute",
-            top: "-45px",
-            left: 0,
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+        <Link to="/" style={{
+          position: "absolute",
+          top: "-50px",
+          left: 0,
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+        }}>
           <Button
             startIcon={<ArrowBack />}
             sx={{
               textTransform: "none",
-              ml: "25px",
+              ml: "20px",
               borderRadius: 8,
               borderColor: "#db2777",
               color: "#db2777",
@@ -78,77 +95,50 @@ export default function Login() {
           </Button>
         </Link>
 
-        {/* Login Card */}
         <Paper
-          elevation={4}
+          elevation={6}
           sx={{
-            px: 4,
+            px: { xs: 4, sm: 6 },
             py: 5,
-            borderRadius: 3,
-            backdropFilter: "blur(10px)",
-            backgroundColor: "rgba(255, 255, 255, 0.75)",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
+            borderRadius: 4,
+            background: "rgba(255, 255, 255, 0.85)",
+            backdropFilter: "blur(14px)",
+            boxShadow: "0 25px 40px rgba(219, 39, 119, 0.15)",
           }}
         >
-          {/* Logo */}
-          <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
             <img
               src={logo}
               alt="Shruti's Bakery Logo"
               width={90}
               height={90}
-              style={{ borderRadius: "50%" }}
+              style={{
+                borderRadius: "50%",
+                boxShadow: "0 6px 12px rgba(0,0,0,0.1)",
+              }}
             />
           </Box>
 
-          {/* Branding */}
-          <Typography
-            variant="h6"
-            align="center"
-            sx={{ fontWeight: "bold", color: "#be185d", mb: 0.5 }}
-          >
+          <Typography variant="h5" align="center" sx={{ fontWeight: 700, color: "#be185d", mb: 0.5 }}>
             Shruti's Bakery
           </Typography>
-          <Typography
-            component="h1"
-            variant="body2"
-            align="center"
-            sx={{ color: "#64748b", mb: 3 }}
-          >
+          <Typography variant="subtitle2" align="center" sx={{ color: "#64748b", mb: 4 }}>
             A Taste of Tradition
           </Typography>
 
-          {/* Login Form */}
           <Box component="form" noValidate onSubmit={handleSubmit}>
             <TextField
-              select
-              fullWidth
-              label="Select Role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              sx={{ bgcolor: "white", borderRadius: 1, mb: 2 }}
-            >
-              <MenuItem value="user">User</MenuItem>
-              <MenuItem value="admin">Admin</MenuItem>
-            </TextField>
-
-            <TextField
-              margin="normal"
               required
               fullWidth
               id="email"
-              label="Email address"
               name="email"
+              label="Email Address"
               autoComplete="email"
-              autoFocus
               variant="outlined"
-              sx={{
-                input: { backgroundColor: "#fff" },
-                borderRadius: 1,
-              }}
+              sx={{ bgcolor: "#fff", borderRadius: 2, mb: 2, input: { fontWeight: 500 } }}
             />
+
             <TextField
-              margin="normal"
               required
               fullWidth
               name="password"
@@ -157,26 +147,33 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
               variant="outlined"
-              sx={{
-                input: { backgroundColor: "#fff" },
-                borderRadius: 1,
-              }}
+              sx={{ bgcolor: "#fff", borderRadius: 2, mb: 2, input: { fontWeight: 500 } }}
             />
+
+            {error && (
+              <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+                {error}
+              </Typography>
+            )}
 
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{
-                mt: 3,
+                mt: 1,
                 mb: 2,
                 bgcolor: "#db2777",
                 fontWeight: 600,
                 fontSize: "1rem",
-                py: 1.2,
+                py: 1.3,
+                borderRadius: 3,
                 textTransform: "none",
-                borderRadius: 2,
-                "&:hover": { bgcolor: "#be185d" },
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  bgcolor: "#be185d",
+                  transform: "translateY(-2px) scale(1.01)",
+                },
               }}
             >
               Log In
@@ -187,7 +184,7 @@ export default function Login() {
                 <Link to="/signup" style={{ textDecoration: "none" }}>
                   <Typography
                     variant="body2"
-                    sx={{ color: "#be185d", fontWeight: 500 }}
+                    sx={{ color: "#be185d", fontWeight: 500, "&:hover": { textDecoration: "underline" } }}
                   >
                     Don't have an account? Sign Up
                   </Typography>
@@ -197,7 +194,6 @@ export default function Login() {
           </Box>
         </Paper>
 
-        {/* Footer */}
         <Box sx={{ mt: 5, textAlign: "center" }}>
           <Typography variant="body2" sx={{ color: "#94a3b8" }}>
             © 2025 Shruti's Bakery. All rights reserved.
