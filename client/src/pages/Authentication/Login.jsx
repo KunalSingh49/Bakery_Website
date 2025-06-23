@@ -6,17 +6,20 @@ import {
   Button,
   Grid,
   Paper,
-  MenuItem,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
+import { ArrowBack, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useState } from "react";
 
 export default function Login() {
-  const [role, setRole] = useState("user");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,9 +41,10 @@ export default function Login() {
         return;
       }
 
-      // ✅ Store token (optional)
+      // ✅ Store token and role
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
+      localStorage.setItem("username", data.firstName);
 
       // ✅ Navigate to respective dashboard
       if (data.role === "admin") {
@@ -67,15 +71,17 @@ export default function Login() {
       }}
     >
       <Container maxWidth="sm" sx={{ position: "relative" }}>
-        {/* Back to Home */}
-        <Link to="/" style={{
-          position: "absolute",
-          top: "-50px",
-          left: 0,
-          textDecoration: "none",
-          display: "flex",
-          alignItems: "center",
-        }}>
+        <Link
+          to="/"
+          style={{
+            position: "absolute",
+            top: "-50px",
+            left: 0,
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           <Button
             startIcon={<ArrowBack />}
             sx={{
@@ -143,11 +149,20 @@ export default function Login() {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
               variant="outlined"
               sx={{ bgcolor: "#fff", borderRadius: 2, mb: 2, input: { fontWeight: 500 } }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             {error && (

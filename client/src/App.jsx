@@ -8,6 +8,7 @@ import AdminDashboard from './pages/Dashboard/AdminDashboard';
 import UserDashboard from './pages/Dashboard/UserDashboard';
 import MenuPage from './components/MenuPage';
 import PrivateRoute from './components/PrivateRoute';
+import CakeCatalog from './components/UserDashboard/Cakes';
 
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<Signup/>}/>
+        <Route path="/cakes" element={<CakeCatalog/>} />
         <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Route>
