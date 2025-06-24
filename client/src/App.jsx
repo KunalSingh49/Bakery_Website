@@ -9,6 +9,7 @@ import UserDashboard from './pages/Dashboard/UserDashboard';
 import MenuPage from './components/MenuPage';
 import PrivateRoute from './components/PrivateRoute';
 import CakeCatalog from './components/UserDashboard/Cakes';
+import OrderPage from './components/UserDashboard/UserOrders';
 
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
 
       <Route element={<PrivateRoute allowedRoles={["user"]} />}>
         <Route path="/user-dashboard" element={<UserDashboard />} />
+        <Route path="/order-page" element={<OrderPage />} />
       </Route>
         <Route path="/menu" element={<MenuPage/>}/>
       </Routes>
